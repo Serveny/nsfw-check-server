@@ -1,0 +1,11 @@
+[package]
+name = "nsfw-check-server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+image = "0.25.2" 
+nsfw =  "0.2.0"
+actix = "0.13"
+actix-web = "4"
+actix-multipart = "0.7.2"

@@ -9,3 +9,5 @@ nsfw =  "0.2.0"
 actix = "0.13"
 actix-web = "4"
 actix-multipart = "0.7.2"
+serde = { version = "1", features = ["derive"] }
+reqwest = "0.12.5"

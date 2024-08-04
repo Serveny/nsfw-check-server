@@ -1596,6 +1596,7 @@ checksum = "589d78dd161e0ff342a72b3341be27e27a495aa6bb717613acb02aa441236c4a"
 dependencies = [
  "image",
  "once_cell",
+ "serde",
  "tract-onnx",
 ]
 

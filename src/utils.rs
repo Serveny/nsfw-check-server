@@ -56,15 +56,12 @@ pub fn check_image(img: DynamicImage, model: &Model) -> HttpResponse {
     }
 }
 
-const THRESHOLD: f32 = 0.5;
-
 pub fn is_allowed(classifications: Vec<Classification>) -> bool {
-    for c in classifications {
-        if (c.metric == Metric::Hentai || c.metric == Metric::Porn || c.metric == Metric::Sexy)
-            && c.score > THRESHOLD
-        {
-            return false;
-        }
-    }
-    true
+    let Some(max_score) = classifications
+        .iter()
+        .max_by(|a, b| a.score.total_cmp(&b.score))
+    else {
+        return true;
+    };
+    max_score.metric != Metric::Hentai && max_score.metric != Metric::Porn
 }

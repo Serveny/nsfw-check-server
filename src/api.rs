@@ -5,6 +5,7 @@ use actix_web::{
     web::{Data, Query},
     HttpResponse, Responder,
 };
+use log::debug;
 use nsfw::{examine, Model};
 use serde::Deserialize;
 
@@ -63,15 +64,23 @@ pub async fn is_allowed_upload(
     form: MultipartForm<CheckUploadRequest>,
     model: Data<Model>,
 ) -> impl Responder {
+    debug!("{:#?}", form.0);
     let img = match read_img(&form.image) {
         Ok(img) => img,
-        Err(err_msg) => return HttpResponse::BadRequest().body(err_msg),
+        Err(err_msg) => {
+            debug!("Error at read_img: {err_msg}");
+            return HttpResponse::BadRequest().body(err_msg);
+        }
     };
 
     let classifications = match examine(&model, &img.into()) {
         Ok(res) => res,
-        Err(err) => return HttpResponse::BadRequest().body(err.to_string()),
+        Err(err) => {
+            debug!("Error at examine: {:?}", err);
+            return HttpResponse::BadRequest().body(err.to_string());
+        }
     };
+    debug!("{classifications:#?}");
 
     HttpResponse::Ok().json(is_allowed(classifications))
 }

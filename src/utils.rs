@@ -9,9 +9,10 @@ use nsfw::{
 use reqwest::{header::CONTENT_TYPE, Client};
 use std::io::BufReader;
 
-pub fn read_img(temp_file: &TempFile) -> Result<DynamicImage, &'static str> {
-    let Ok(file) = std::fs::File::open(&temp_file.file) else {
-        return Err("Cannot read file");
+pub fn read_img(temp_file: &TempFile) -> Result<DynamicImage, String> {
+    let file = match std::fs::File::open(&temp_file.file) {
+        Ok(file) => file,
+        Err(err) => return Err(format!("Cannot read file: {err:?}")),
     };
     let reader = BufReader::new(file);
     let format = temp_file
@@ -19,7 +20,7 @@ pub fn read_img(temp_file: &TempFile) -> Result<DynamicImage, &'static str> {
         .as_ref()
         .ok_or("Can't read image format")?;
     let format = ImageFormat::from_mime_type(format).ok_or("Unknown image format")?;
-    let img = image::load(reader, format).map_err(|_| "Image corrupt")?;
+    let img = image::load(reader, format).map_err(|err| format!("Image corrupt: {err:?}"))?;
 
     Ok(img)
 }

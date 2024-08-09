@@ -63,7 +63,13 @@ A web server that checks if an image is NSFW.
 ]
 ```
 
+## Docker Hub (easiest)
+
+1. **Pull**: `docker pull serveny/nsfw-check-server` (Build available for arm & amd)
+2. **Run**: `docker run -p 6969:6969 --rm --name ncs serveny/nsfw-check-server`
+
 ## Docker
 
-1. **Build**: `docker build -t nsfw-check-server .`
-2. **Run**: `docker run -p 6969:6969 --rm --name ncs nsfw-check-server`
+1. Download this repository and open terminal inside the repository directory
+2. **Build**: `docker build -t nsfw-check-server .`
+3. **Run**: `docker run -p 6969:6969 --rm --name ncs nsfw-check-server`

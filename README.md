@@ -2,6 +2,8 @@
 
 A web server that checks if an image is NSFW.
 
+It's just the NSFW crate (https://github.com/fyko/nsfw) with an actix web server.
+
 ## API
 
 #### Public requests

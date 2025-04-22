@@ -4,12 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-image = "0.25.5" 
-nsfw =  { version = "0.2.0", features = ["serde"] }
+image = "0.25.6"
+nsfw = { version = "0.2.0", features = ["serde"] }
 actix = "0.13.5"
-actix-web = "4.9.0"
+actix-web = "4.10.2"
 actix-multipart = "0.7.2"
-serde = { version = "1.0.217", features = ["derive"] }
-reqwest = "0.12.12"
-env_logger = "0.11.6"
-log = "0.4.25"
+serde = { version = "1.0.219", features = ["derive"] }
+reqwest = "0.12.15"
+env_logger = "0.11.8"
+log = "0.4.27"

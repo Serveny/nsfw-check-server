@@ -1,5 +1,6 @@
+use actix_cors::Cors;
 use actix_multipart::form::tempfile::TempFile;
-use actix_web::HttpResponse;
+use actix_web::{http::header, HttpResponse};
 use image::{load_from_memory, load_from_memory_with_format, DynamicImage, ImageFormat};
 use nsfw::{
     examine,
@@ -8,6 +9,20 @@ use nsfw::{
 };
 use reqwest::{header::CONTENT_TYPE, Client};
 use std::io::BufReader;
+
+pub fn cors_cfg() -> Cors {
+    Cors::default()
+        .allowed_methods(vec!["GET", "POST"])
+        .allowed_headers(vec![
+            header::AUTHORIZATION,
+            header::ACCEPT,
+            header::CONTENT_TYPE,
+            header::CONTENT_LENGTH,
+        ])
+        .allow_any_origin()
+        .supports_credentials()
+        .max_age(3600)
+}
 
 pub fn read_img(temp_file: &TempFile) -> Result<DynamicImage, String> {
     let file = match std::fs::File::open(&temp_file.file) {

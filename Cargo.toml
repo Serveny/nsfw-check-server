@@ -7,9 +7,10 @@ edition = "2021"
 image = "0.25.6"
 nsfw = { version = "0.2.0", features = ["serde"] }
 actix = "0.13.5"
-actix-web = "4.10.2"
+actix-web = "4.11.0"
 actix-multipart = "0.7.2"
 serde = { version = "1.0.219", features = ["derive"] }
-reqwest = "0.12.15"
+reqwest = "0.12.23"
 env_logger = "0.11.8"
 log = "0.4.27"
+actix-cors = "0.7.1"

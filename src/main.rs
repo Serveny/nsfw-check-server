@@ -1,3 +1,4 @@
+use crate::utils::cors_cfg;
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 use api::{check_upload, check_url, is_allowed_upload, is_allowed_url};
 use log::LevelFilter;
@@ -17,6 +18,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
+            .wrap(cors_cfg())
             .app_data(Data::new(create_model(MODEL).expect("Cant load model")))
             .service(check_upload)
             .service(check_url)

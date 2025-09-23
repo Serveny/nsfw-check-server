@@ -69,10 +69,13 @@ It's just the NSFW crate (https://github.com/fyko/nsfw) with an actix web server
 
 See under `examples/requests.html` for an interactive example.
 
-- GET: `http://localhost:6969/check?url=https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg`
+> [!WARNING]  
+> Many official sites protect their images from web scraping. A typical error for this would be `Format error decoding Jpeg: Error parsing image. Illegal start bytes:506C`. For the GET methods use sources you know you can use.
+
+- GET: `http://localhost:6969/check?url=https://picsum.photos/id/1/200/300`
 - POST: `http://localhost:6969/check` with form data
 
-- GET: `http://localhost:6969/is_allowed?url=https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg`
+- GET: `http://localhost:6969/is_allowed?url=https://picsum.photos/id/1/200/300`
 - POST: `http://localhost:6969/is_allowed` with form data
 
 ## Docker Hub (easiest)

@@ -1,14 +1,14 @@
 use actix_cors::Cors;
 use actix_multipart::form::tempfile::TempFile;
 use actix_web::{http::header, HttpResponse};
-use image::{load_from_memory, load_from_memory_with_format, DynamicImage, ImageFormat};
+use image::{DynamicImage, ImageFormat, ImageReader};
 use nsfw::{
     examine,
     model::{Classification, Metric},
     Model,
 };
 use reqwest::{header::CONTENT_TYPE, Client};
-use std::io::BufReader;
+use std::io::{BufReader, Cursor};
 
 pub fn cors_cfg() -> Cors {
     Cors::default()
@@ -41,28 +41,36 @@ pub fn read_img(temp_file: &TempFile) -> Result<DynamicImage, String> {
 }
 
 pub async fn fetch_image(url: &str) -> Result<DynamicImage, String> {
-    let client = Client::new();
+    let client = Client::builder()
+        // Set user agent to prevent web scraping protections
+        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+        .build()
+        .map_err(|err| err.to_string())?;
+
     let response = client
         .get(url)
         .send()
         .await
         .map_err(|err| err.to_string())?;
+
+    // Read format from content type header
     let format = response
         .headers()
         .get(CONTENT_TYPE)
-        .and_then(|format| format.to_str().ok())
-        .and_then(|format| ImageFormat::from_mime_type(format));
-    let bytes = response
-        .bytes()
-        .await
-        .map_err(|err| err.to_string())?
-        .to_vec();
+        .and_then(|value| value.to_str().ok())
+        .and_then(ImageFormat::from_mime_type)
+        // If no header, read format from url ending
+        .or_else(|| ImageFormat::from_path(url).ok());
 
-    match format {
-        Some(format) => load_from_memory_with_format(&bytes, format),
-        None => load_from_memory(&bytes),
+    let bytes = response.bytes().await.map_err(|err| err.to_string())?;
+
+    let mut reader = ImageReader::new(Cursor::new(bytes));
+
+    if let Some(format) = format {
+        reader.set_format(format);
     }
-    .map_err(|err| err.to_string())
+
+    reader.decode().map_err(|err| err.to_string())
 }
 
 pub fn check_image(img: DynamicImage, model: &Model) -> HttpResponse {

@@ -17,7 +17,7 @@
       <form action="http://localhost:6969/check" method="get">
         <h3>GET</h3>
         <label for="check-url">image URL:</label>
-        <input type="url" id="check-url" name="url" placeholder="https://example.com/image.jpg" required>
+        <input type="url" id="check-url" name="url" value="https://picsum.photos/id/1/200/300" required>
         <button type="submit">Send</button>
       </form>
 
@@ -39,7 +39,7 @@
       <form action="http://localhost:6969/is_allowed" method="get">
         <h3>GET</h3>
         <label for="allowed-url">image URL:</label>
-        <input type="url" id="allowed-url" name="url" placeholder="https://example.com/image.jpg" required>
+        <input type="url" id="allowed-url" name="url" value="https://picsum.photos/id/1/200/300" required>
         <button type="submit">Send</button>
       </form>
 
@@ -97,7 +97,7 @@
         const response = await fetch(url, options);
 
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+          throw new Error(`HTTP error! Status: ${response.status} ${response.statusText} - ${await response.text()}`);
         }
 
         const data = await response.json();
@@ -105,7 +105,6 @@
 
       } catch (error) {
         resultDisplay.textContent = `Error:\n${error.message}`;
-        console.error('API error:', error);
       }
     };
 

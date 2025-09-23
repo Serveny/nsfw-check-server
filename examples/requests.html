@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NCS request examples</title>
+</head>
+
+<body>
+  <h1>NSFW check server request examples</h1>
+
+  <div>
+    <div>
+      <h2>Endpoint: <code>/check</code></h2>
+
+      <form action="http://localhost:6969/check" method="get">
+        <h3>GET</h3>
+        <label for="check-url">image URL:</label>
+        <input type="url" id="check-url" name="url" placeholder="https://example.com/image.jpg" required>
+        <button type="submit">Send</button>
+      </form>
+
+      <hr>
+
+      <form action="http://localhost:6969/check" method="post" enctype="multipart/form-data">
+        <h3>POST</h3>
+        <label for="check-file">image file:</label>
+        <input type="file" id="check-file" name="image" accept="image/*" required>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    <hr />
+
+    <div class="endpoint-card">
+      <h2>Endpoint: <code>/is_allowed</code></h2>
+
+      <form action="http://localhost:6969/is_allowed" method="get">
+        <h3>GET</h3>
+        <label for="allowed-url">image URL:</label>
+        <input type="url" id="allowed-url" name="url" placeholder="https://example.com/image.jpg" required>
+        <button type="submit">Send</button>
+      </form>
+
+      <hr>
+
+      <form action="http://localhost:6969/is_allowed" method="post" enctype="multipart/form-data">
+        <h3>POST</h3>
+        <label for="allowed-file">image file:</label>
+        <input type="file" id="allowed-file" name="image" accept="image/*" required>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    <hr />
+
+    <div>
+      <h2>answer</h2>
+      <pre id="response-output">Waiting for request</pre>
+    </div>
+  </div>
+
+  <script>
+    const handleFormSubmit = async (event) => {
+      event.preventDefault();
+
+      const form = event.target;
+      const method = form.method.toUpperCase();
+      const action = form.action;
+      const resultDisplay = document.getElementById('response-output');
+      resultDisplay.textContent = 'Loading...';
+
+      let url = action;
+      const options = {
+        method: method,
+      };
+
+      try {
+        if (method === 'GET') {
+          const imageUrl = form.querySelector('input[name="url"]').value;
+          if (!imageUrl) {
+            resultDisplay.textContent = 'Error: Please insert image url';
+            return;
+          }
+          url = `${action}?url=${encodeURIComponent(imageUrl)}`;
+        } else if (method === 'POST') {
+          const fileInput = form.querySelector('input[name="image"]');
+          if (!fileInput.files.length) {
+            resultDisplay.textContent = 'Error: Please select file.';
+            return;
+          }
+          const formData = new FormData(form);
+          options.body = formData;
+        }
+
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        resultDisplay.textContent = JSON.stringify(data, null, 2);
+
+      } catch (error) {
+        resultDisplay.textContent = `Error:\n${error.message}`;
+        console.error('API error:', error);
+      }
+    };
+
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', handleFormSubmit);
+    });
+  </script>
+
+</body>
+
+</html>

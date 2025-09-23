@@ -21,7 +21,7 @@ It's just the NSFW crate (https://github.com/fyko/nsfw) with an actix web server
     <td>Check image from URL</td>
     <td>GET</td>
     <td><code>/check</code></td>
-    <td><code>url</code>: URL as string to read image from</td>
+    <td><code>url</code> as query parameter to read image from</td>
     <td>JSON</td>
     <td>Classification result</td>
   </tr>
@@ -37,7 +37,7 @@ It's just the NSFW crate (https://github.com/fyko/nsfw) with an actix web server
     <td>Is image allowed (=not NSFW)</td>
     <td>GET</td>
     <td><code>/is_allowed</code></td>
-    <td><code>url</code>: URL as string to read image from</td>
+    <td><code>url</code> as query parameter to read image from</td>
     <td>JSON</td>
     <td>boolean</td>
   </tr>
@@ -64,6 +64,16 @@ It's just the NSFW crate (https://github.com/fyko/nsfw) with an actix web server
   { "metric": "Sexy", "score": 0.000042102398 }
 ]
 ```
+
+#### Example requests
+
+See under `examples/requests.html` for an interactive example.
+
+- GET: `http://localhost:6969/check?url=https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg`
+- POST: `http://localhost:6969/check` with form data
+
+- GET: `http://localhost:6969/is_allowed?url=https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg`
+- POST: `http://localhost:6969/is_allowed` with form data
 
 ## Docker Hub (easiest)
 
